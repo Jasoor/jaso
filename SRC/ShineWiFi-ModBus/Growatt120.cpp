@@ -14,7 +14,7 @@
 // - Storage(SPA Type)
 // - Storage(SPH Type)
 
-void init_growatt120(sProtocolDefinition_t& Protocol, Growatt& inverter) {
+void init_growatt120(sProtocolDefinition_t &Protocol, Growatt &inverter) {
   // definition of input registers
   Protocol.InputRegisterCount = eP120InputRegisters_t::LASTInput;
   Protocol.InputFragmentCount = 3;

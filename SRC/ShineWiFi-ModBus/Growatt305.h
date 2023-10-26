@@ -20,4 +20,4 @@ typedef enum {
   P305_TEMPERATURE,
 } eP305InputRegisters_t;
 
-void init_growatt305(sProtocolDefinition_t& Protocol, Growatt& inverter);
+void init_growatt305(sProtocolDefinition_t &Protocol, Growatt &inverter);

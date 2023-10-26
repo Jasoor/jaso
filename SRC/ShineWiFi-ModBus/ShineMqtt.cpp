@@ -1,14 +1,14 @@
 #include "ShineMqtt.h"
 #include "Growatt.h"
 #if MQTT_SUPPORTED == 1
-#include <TLog.h>
-#include <StreamUtils.h>
 #include "PubSubClient.h"
+#include <StreamUtils.h>
+#include <TLog.h>
 
-ShineMqtt::ShineMqtt(WiFiClient& wc, Growatt& inverter)
+ShineMqtt::ShineMqtt(WiFiClient &wc, Growatt &inverter)
     : wifiClient(wc), mqttclient(wifiClient), inverter(inverter) {}
 
-void ShineMqtt::mqttSetup(const MqttConfig& config) {
+void ShineMqtt::mqttSetup(const MqttConfig &config) {
   this->mqttconfig = config;
 
   uint16_t intPort = config.mqttport.toInt();
@@ -23,7 +23,7 @@ void ShineMqtt::mqttSetup(const MqttConfig& config) {
 
   this->mqttclient.setServer(this->mqttconfig.mqttserver.c_str(), intPort);
   this->mqttclient.setCallback(
-      [this](char* topic, byte* payload, unsigned int length) {
+      [this](char *topic, byte *payload, unsigned int length) {
         this->onMqttMessage(topic, payload, length);
       });
 }
@@ -91,7 +91,7 @@ bool ShineMqtt::mqttReconnect() {
   return false;
 }
 
-boolean ShineMqtt::mqttPublish(const String& JsonString) {
+boolean ShineMqtt::mqttPublish(const String &JsonString) {
   Log.print(F("publish MQTT message... "));
   if (this->mqttclient.connected()) {
     bool res = this->mqttclient.publish(this->mqttconfig.mqtttopic.c_str(),
@@ -106,7 +106,7 @@ boolean ShineMqtt::mqttPublish(const String& JsonString) {
   }
 }
 
-boolean ShineMqtt::mqttPublish(ShineJsonDocument& doc) {
+boolean ShineMqtt::mqttPublish(ShineJsonDocument &doc) {
   Log.print(F("publish MQTT message... "));
   if (this->mqttclient.connected()) {
     bool res = this->mqttclient.beginPublish(this->mqttconfig.mqtttopic.c_str(),
@@ -126,9 +126,9 @@ boolean ShineMqtt::mqttPublish(ShineJsonDocument& doc) {
   }
 }
 
-void ShineMqtt::onMqttMessage(char* topic, byte* payload, unsigned int length) {
+void ShineMqtt::onMqttMessage(char *topic, byte *payload, unsigned int length) {
   String strTopic(topic);
-  String strPayload(reinterpret_cast<char*>(payload));
+  String strPayload(reinterpret_cast<char *>(payload));
 
   Log.print(F("MQTT message arrived ["));
   Log.print(strTopic);
