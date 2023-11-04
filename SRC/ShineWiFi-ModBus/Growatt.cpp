@@ -1,10 +1,10 @@
-#include <ModbusMaster.h>
 #include <ArduinoJson.h>
+#include <ModbusMaster.h>
 #include <TLog.h>
 
-#include "GrowattTypes.h"
-#include "Growatt.h"
 #include "Config.h"
+#include "Growatt.h"
+#include "GrowattTypes.h"
 #ifndef _SHINE_CONFIG_H_
 #error Please rename Config.h.example to Config.h
 #endif
@@ -31,25 +31,25 @@ Growatt::Growatt() {
   handlers = std::map<String, CommandHandlerFunc>();
 
   // register default handlers
-  RegisterCommand("echo", [this](const DynamicJsonDocument& req,
-                                 DynamicJsonDocument& res, Growatt& inverter) {
+  RegisterCommand("echo", [this](const DynamicJsonDocument &req,
+                                 DynamicJsonDocument &res, Growatt &inverter) {
     return handleEcho(req, res, *this);
   });
 
-  RegisterCommand("list", [this](const DynamicJsonDocument& req,
-                                 DynamicJsonDocument& res, Growatt& inverter) {
+  RegisterCommand("list", [this](const DynamicJsonDocument &req,
+                                 DynamicJsonDocument &res, Growatt &inverter) {
     return handleCommandList(req, res, *this);
   });
 
   RegisterCommand(
       "modbus/get",
-      [this](const DynamicJsonDocument& req, DynamicJsonDocument& res,
-             Growatt& inverter) { return handleModbusGet(req, res, *this); });
+      [this](const DynamicJsonDocument &req, DynamicJsonDocument &res,
+             Growatt &inverter) { return handleModbusGet(req, res, *this); });
 
   RegisterCommand(
       "modbus/set",
-      [this](const DynamicJsonDocument& req, DynamicJsonDocument& res,
-             Growatt& inverter) { return handleModbusSet(req, res, *this); });
+      [this](const DynamicJsonDocument &req, DynamicJsonDocument &res,
+             Growatt &inverter) { return handleModbusSet(req, res, *this); });
 }
 
 void Growatt::InitProtocol() {
@@ -70,7 +70,7 @@ void Growatt::InitProtocol() {
 #endif
 }
 
-void Growatt::begin(Stream& serial) {
+void Growatt::begin(Stream &serial) {
   /**
    * @brief Set up communication with the inverter
    * @param serial The serial interface
@@ -241,7 +241,7 @@ sGrowattModbusReg_t Growatt::GetHoldingRegister(uint16_t reg) {
   return _Protocol.HoldingRegisters[reg];
 }
 
-bool Growatt::ReadHoldingReg(uint16_t adr, uint16_t* result) {
+bool Growatt::ReadHoldingReg(uint16_t adr, uint16_t *result) {
 /**
  * @brief read 16b holding register
  * @param adr address of the register
@@ -261,7 +261,7 @@ bool Growatt::ReadHoldingReg(uint16_t adr, uint16_t* result) {
 #endif
 }
 
-bool Growatt::ReadHoldingReg(uint16_t adr, uint32_t* result) {
+bool Growatt::ReadHoldingReg(uint16_t adr, uint32_t *result) {
 /**
  * @brief read 32b holding register
  * @param adr address of the register
@@ -281,7 +281,7 @@ bool Growatt::ReadHoldingReg(uint16_t adr, uint32_t* result) {
 #endif
 }
 
-bool Growatt::ReadHoldingRegFrag(uint16_t adr, uint8_t size, uint16_t* result) {
+bool Growatt::ReadHoldingRegFrag(uint16_t adr, uint8_t size, uint16_t *result) {
   /**
    * @brief read 16b holding register fragment
    * @param adr address of the register
@@ -299,7 +299,7 @@ bool Growatt::ReadHoldingRegFrag(uint16_t adr, uint8_t size, uint16_t* result) {
   return false;
 }
 
-bool Growatt::ReadHoldingRegFrag(uint16_t adr, uint8_t size, uint32_t* result) {
+bool Growatt::ReadHoldingRegFrag(uint16_t adr, uint8_t size, uint32_t *result) {
   /**
    * @brief read 32b holding register fragment
    * @param adr address of the register
@@ -336,7 +336,7 @@ bool Growatt::WriteHoldingReg(uint16_t adr, uint16_t value) {
 #endif
 }
 
-bool Growatt::WriteHoldingRegFrag(uint16_t adr, uint8_t size, uint16_t* value) {
+bool Growatt::WriteHoldingRegFrag(uint16_t adr, uint8_t size, uint16_t *value) {
   /**
    * @brief write 16b holding register
    * @param adr address of the register
@@ -354,7 +354,7 @@ bool Growatt::WriteHoldingRegFrag(uint16_t adr, uint8_t size, uint16_t* value) {
   return false;
 }
 
-bool Growatt::ReadInputReg(uint16_t adr, uint16_t* result) {
+bool Growatt::ReadInputReg(uint16_t adr, uint16_t *result) {
 /**
  * @brief read 16b input register
  * @param adr address of the register
@@ -374,7 +374,7 @@ bool Growatt::ReadInputReg(uint16_t adr, uint16_t* result) {
 #endif
 }
 
-bool Growatt::ReadInputReg(uint16_t adr, uint32_t* result) {
+bool Growatt::ReadInputReg(uint16_t adr, uint32_t *result) {
 /**
  * @brief read 32b input register
  * @param adr address of the register
@@ -394,18 +394,18 @@ bool Growatt::ReadInputReg(uint16_t adr, uint32_t* result) {
 #endif
 }
 
-double Growatt::roundByResolution(const double& value,
-                                  const float& resolution) {
+double Growatt::roundByResolution(const double &value,
+                                  const float &resolution) {
   double res = 1 / resolution;
   return int32_t(value * res + 0.5) / res;
 }
 
-void Growatt::JSONAddReg(sGrowattModbusReg_t* reg, JsonDocument& doc) {
+void Growatt::JSONAddReg(sGrowattModbusReg_t *reg, JsonDocument &doc) {
   auto name = reg->name;
   RegisterSize_t size = reg->size;
-  const float& mult = reg->multiplier;
-  const uint32_t& value = reg->value;
-  const float& resolution = reg->resolution;
+  const float &mult = reg->multiplier;
+  const uint32_t &value = reg->value;
+  const float &resolution = reg->resolution;
 
   switch (size) {
     case SIZE_16BIT_S:
@@ -425,7 +425,7 @@ void Growatt::JSONAddReg(sGrowattModbusReg_t* reg, JsonDocument& doc) {
   }
 }
 
-void Growatt::CreateJson(ShineJsonDocument& doc, String MacAddress) {
+void Growatt::CreateJson(ShineJsonDocument &doc, String MacAddress) {
 #if SIMULATE_INVERTER != 1
   for (int i = 0; i < _Protocol.InputRegisterCount; i++)
     JSONAddReg(&_Protocol.InputRegisters[i], doc);
@@ -453,11 +453,11 @@ void Growatt::CreateJson(ShineJsonDocument& doc, String MacAddress) {
   doc["Cnt"] = _PacketCnt;
 }
 
-void Growatt::CreateUIJson(ShineJsonDocument& doc) {
+void Growatt::CreateUIJson(ShineJsonDocument &doc) {
 #if SIMULATE_INVERTER != 1
-  const char* unitStr[] = {"", "W", "kWh", "V", "A", "s", "%", "Hz", "°C"};
-  const char* statusStr[] = {"(Waiting)", "(Normal Operation)", "", "(Error)"};
-  const int statusStrLength = sizeof(statusStr) / sizeof(char*);
+  const char *unitStr[] = {"", "W", "kWh", "V", "A", "s", "%", "Hz", "°C"};
+  const char *statusStr[] = {"(Waiting)", "(Normal Operation)", "", "(Error)"};
+  const int statusStrLength = sizeof(statusStr) / sizeof(char *);
 
   for (int i = 0; i < _Protocol.InputRegisterCount; i++) {
     if (_Protocol.InputRegisters[i].frontend == true ||
@@ -566,12 +566,12 @@ void Growatt::CreateUIJson(ShineJsonDocument& doc) {
 #endif  // SIMULATE_INVERTER
 }
 
-void Growatt::RegisterCommand(const String& command,
+void Growatt::RegisterCommand(const String &command,
                               CommandHandlerFunc handler) {
   handlers[command] = handler;
 }
 
-String Growatt::HandleCommand(const String& command, const String& request) {
+String Growatt::HandleCommand(const String &command, const String &request) {
   String correlationId = "";
   DynamicJsonDocument req(1024);
   DynamicJsonDocument res(1024);
@@ -609,9 +609,9 @@ String Growatt::HandleCommand(const String& command, const String& request) {
   return responseJson;
 }
 
-std::tuple<bool, String> Growatt::handleEcho(const DynamicJsonDocument& req,
-                                             DynamicJsonDocument& res,
-                                             Growatt& inverter) {
+std::tuple<bool, String> Growatt::handleEcho(const DynamicJsonDocument &req,
+                                             DynamicJsonDocument &res,
+                                             Growatt &inverter) {
   if (!req.containsKey("text")) {
     return std::make_tuple(false, "'text' field is required");
   }
@@ -621,8 +621,8 @@ std::tuple<bool, String> Growatt::handleEcho(const DynamicJsonDocument& req,
 }
 
 std::tuple<bool, String> Growatt::handleCommandList(
-    const DynamicJsonDocument& req, DynamicJsonDocument& res,
-    Growatt& inverter) {
+    const DynamicJsonDocument &req, DynamicJsonDocument &res,
+    Growatt &inverter) {
   JsonArray commands = res.createNestedArray("commands");
   for (auto it = handlers.begin(); it != handlers.end(); ++it) {
     commands.add(it->first);
@@ -631,8 +631,8 @@ std::tuple<bool, String> Growatt::handleCommandList(
 }
 
 std::tuple<bool, String> Growatt::handleModbusGet(
-    const DynamicJsonDocument& req, DynamicJsonDocument& res,
-    Growatt& inverter) {
+    const DynamicJsonDocument &req, DynamicJsonDocument &res,
+    Growatt &inverter) {
   if (!req.containsKey("id")) {
     return std::make_tuple(false, "'id' field is required");
   }
@@ -700,8 +700,8 @@ std::tuple<bool, String> Growatt::handleModbusGet(
 }
 
 std::tuple<bool, String> Growatt::handleModbusSet(
-    const DynamicJsonDocument& req, DynamicJsonDocument& res,
-    Growatt& inverter) {
+    const DynamicJsonDocument &req, DynamicJsonDocument &res,
+    Growatt &inverter) {
   if (!req.containsKey("id")) {
     return std::make_tuple(false, "'id' field is required");
   }

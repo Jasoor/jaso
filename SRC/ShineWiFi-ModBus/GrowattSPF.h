@@ -37,4 +37,4 @@ typedef enum {
   SPF_BATT_PWR
 } eSPFInputRegisters_t;
 
-void init_growattSPF(sProtocolDefinition_t& Protocol, Growatt& inverter);
+void init_growattSPF(sProtocolDefinition_t &Protocol, Growatt &inverter);

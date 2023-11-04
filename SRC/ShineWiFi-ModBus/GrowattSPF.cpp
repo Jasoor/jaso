@@ -7,7 +7,7 @@
    Replacing ShineWifi-F "USB" stick
 */
 
-void init_growattSPF(sProtocolDefinition_t& Protocol, Growatt& inverter) {
+void init_growattSPF(sProtocolDefinition_t &Protocol, Growatt &inverter) {
   // definition of input registers
   Protocol.InputRegisterCount = 27;
   // address, value, size, name, multiplier, unit, frontend, plot

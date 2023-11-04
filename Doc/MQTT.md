@@ -102,3 +102,10 @@ The following mqtt commands are defined for protocol 1.24:
     gridfirst/set/powerrate
     gridfirst/set/stopsoc
     gridfirst/set/timeslot
+    power/set/activeRate
+    power/get/activeRate
+
+Example how to limit output power in percent via mosquitto_pub from cli:
+
+    mosquitto_pub -h <mqttip> -u <mqttuser> -P <mqttpw> \
+    -t "<base-topic>/command/power/set/activeRate" -m "{ \"value\": 50 }"
